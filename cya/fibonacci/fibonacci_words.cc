@@ -1,7 +1,10 @@
-#include <iostream>
 #include <math.h>
+
+#include <iostream>
 #include <fstream>
+
 #include "fibonacci_words.hpp"
+
 using namespace std;
 
 void leer(char *file_name) {

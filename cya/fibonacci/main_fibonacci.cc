@@ -1,19 +1,31 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
 
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
 #include "fibonacci_words.hpp"
+
 using namespace std;
 
 int main(int argc, char *argv[], char *arg[]) {
-    cout << argc << endl;
-    if(argc < 3/*3*/) {
+
+    char help[] = "--help";
+
+
+
+    if(argc == 2 && strcmp(help, argv[1]) == 0 ){
+        cout << "Explicar" << endl;
+        exit(0);
+    }   
+
+    if(argc < 3) {
         cout << "ERROR" << endl;
+        exit(0);
     }
 
     leer(argv[1]);
+
+
+    return 0;
 }
 
     
