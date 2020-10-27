@@ -1,3 +1,11 @@
+using namespace std;
+class FibonacciWords {
+    public:
+      FibonacciWords(string);
+      ~FibonacciWords(){}
+      void print();
 
+    private: 
+      string kWord;
 
-void leer(char *file_name);
+};

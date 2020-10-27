@@ -22,7 +22,30 @@ int main(int argc, char *argv[], char *arg[]) {
         exit(0);
     }
 
-    leer(argv[1]);
+
+
+
+    ifstream archivo;
+    string palabra;
+    archivo.open(argv[1], ios::in);
+
+    
+    while(!archivo.eof()) {
+        getline(archivo,palabra);
+
+        cout << palabra << endl;
+        cout << palabra.length() <<endl;
+        
+        FibonacciWords pal(palabra);
+        
+    }
+    archivo.close();
+
+
+    //hacer el fibonatchi hasta que el tamaño de la cadena sea igual la leido por pantalla y cuando sean iguales conparar 
+    
+
+
 
 
     return 0;
