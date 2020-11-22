@@ -11,7 +11,7 @@ $(TARGET): $(OBJS)
 
 .PHONY : clean
 clean:
-	@rm -f *.o outfile.txt $(TARGET)
+	@rm -f *.o $(TARGET)
 
 ejecutar:
 	@./main_NFA input.nfa input.txt output.txt

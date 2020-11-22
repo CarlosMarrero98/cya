@@ -11,6 +11,10 @@ bool NFA::Chek(string cadena){
         bool result =  ChekLenguaje(cadena[i]);
         if(result == false) return false;
     }
+
+    Estado inicial = GetEstadoByNombre(estado_inicial);
+    bool checked = CheckRecursive(inicial, cadena, 0);
+    return checked;
 /*
     Estado estado_actual = *estados.begin();
     for(int i = 0; i < cadena.size(); i++) {
@@ -85,4 +89,59 @@ bool NFA::ChekLenguaje(int letra) {
         it++;       
     }
     return false;
+}
+
+Estado NFA::GetEstadoByNombre(int nombre) {
+    // Obtener estado siguiente a partir de su nombre
+    set<Estado>::iterator it = estados.begin();
+    Estado estado = *estados.begin();
+    while (it != estados.end())
+    { // recorro el set
+        estado = *it;
+        if (estado.GetNombre() == nombre)
+            return estado;
+        it++;
+    }
+}
+
+bool NFA::CheckRecursive(Estado estado, string cadena, int pos) {
+    bool result = false;
+    vector<int> aux_simbolos = estado.GetSimbolo();
+    bool vacio = true;
+    
+    for (int i = 0; i < aux_simbolos.size(); i++) {
+        if(aux_simbolos[i] == '~') {
+            vacio = false;
+            
+        }
+    }
+
+    if ((cadena.length() == pos && vacio == true)) {
+        //condicion de parada
+
+        return estado.GetAceptacion() ? true : false;
+
+    }else {
+
+        vector<int> aux_simbolos = estado.GetSimbolo();
+        vector<int> aux_siguiente = estado.GetSiguiente();
+
+        for (int i = 0; i < estado.GetNumeroTransiciones(); i++) {
+            if (aux_simbolos[i] == cadena[pos]) {
+                Estado siguienteEstado = GetEstadoByNombre(aux_siguiente[i]);
+                result = CheckRecursive(siguienteEstado, cadena, pos + 1);
+
+                if (result) return true;
+            }
+
+            if(aux_simbolos[i] == 126) {
+                
+                Estado siguienteEstado = GetEstadoByNombre(aux_siguiente[i]);
+                result = CheckRecursive(siguienteEstado, cadena, pos);
+
+                if (result) return true; 
+            }
+        }
+        return false;
+    }
 }

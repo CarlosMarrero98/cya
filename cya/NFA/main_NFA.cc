@@ -28,17 +28,19 @@ int main(int argc, char *argv[]){
 
     ifstream infile(argv[2]); //lee el archivo infile.txt
     string line;
+    ofstream output(argv[3]);
 
     while(infile >> line) {
         bool resultado = nfa.Chek(line); 
         if(resultado == true) {
-            cout << "si" << endl;
+            output << "si" << endl;
         }else{
-            cout << "no" << endl;
+            output << "no" << endl;
         }
     }
 
     infile.close();
+    output.close();
 
     return 0;
     

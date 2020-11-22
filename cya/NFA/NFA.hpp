@@ -19,4 +19,6 @@ class NFA {
       set<Estado> estados;
       bool ChekLenguaje(int letra);
       void Build(string fichero_NFA);
+      Estado GetEstadoByNombre(int nombre);
+      bool CheckRecursive(Estado estado, string cadena, int pos);
 };  
