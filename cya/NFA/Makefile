@@ -20,4 +20,4 @@ push:
 	git pull 
 	git add . 
 	git commit -m "Another example" 
-	git push 
+	git push

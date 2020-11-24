@@ -1,144 +1,116 @@
-#include "NFA.hpp" 
+#include "NFA.h" 
 
-
-NFA::NFA(string fichero_NFA) {
+// Constructor NFA
+NFA::NFA(std::string fichero_NFA) {
     Build(fichero_NFA);
 }
-
-bool NFA::Chek(string cadena){
-    
-    for(int i = 0; i < cadena.length(); i++){
+//Metodo check
+//Primero comprueba si la cadena obtenida del input.txt tiene algun caracter que no pertenezca al alfabeto
+//Usando el metodo CheckRecursive() compruebo si la cadena pertenece o no al NFA.
+bool NFA::Chek(std::string cadena) {
+    for(int i = 0; i < cadena.length(); i++) {
         bool result =  ChekLenguaje(cadena[i]);
         if(result == false) return false;
     }
-
     Estado inicial = GetEstadoByNombre(estado_inicial);
-    bool checked = CheckRecursive(inicial, cadena, 0);
-    return checked;
-/*
-    Estado estado_actual = *estados.begin();
-    for(int i = 0; i < cadena.size(); i++) {
-        vector<int> aux_simbolo = estado_actual.GetSimbolo();
-        for(int j = 0; j < estado_actual.GetSimbolo().size(); j++){
-            if(cadena[i] == aux_simbolo[j]) {
-                //si ocurre
-                vector<int> aux_nobre = estado_actual.GetSiguiente();
-                Estado aux;
-
-                for(set<Estado>::iterator it = estados.begin(); it != estados.end(); it ++) {
-                    aux = *it;
-                    if(aux.GetNombre() == aux_nobre[j]){
-                        estado_actual = aux;
-                        if(estado_actual.GetAceptacion() == true) return true; 
-                    }
-                }
-            }
-        }
-    }
-
-    return false;*/
+    return CheckRecursive(inicial, cadena, 0);
 }
-
-void NFA::Build(string fichero_NFA){
+//Con el metodo Build le doy valores a los atributos
+//Usando ifstream leo el fichero input.nfa
+//Almaceno cada linea del fichero input.nfa en un vector, de dimension 100, de 
+//nombre info_NFA. Y con "erase" ajusto la dimension del vector
+//Los atributos total_de_estados y estado_inicial los obtengo de las dos primeras lineas
+//del fichero input.nfa. Utilizo stoi para combertir un string en un numero
+//El atributo estados lo obtengo de las sigientes lines del fichero. Utilizo la clase Estado y set 
+//para ello
+//El atributo alfabeto lo obtengo del atributo simbolo de la clase Estado
+void NFA::Build(std::string fichero_NFA) {
+    std::ifstream infile; 
+    std::string line;
+    infile.open(fichero_NFA, std::ios::in);
     
-    ifstream infile; //lee el archivo input.nfa
-    string line;
-    infile.open(fichero_NFA, ios::in);
-    
-    vector<string> info_NFA(100); //Donde almaceno la info del NFA
-
+    std::vector<std::string> info_NFA(100); 
     int i = 0;
     while(!infile.eof()) {
         getline(infile, line);
         info_NFA[i] = line;
         i++;
     }
+    info_NFA.erase(info_NFA.begin()+i,info_NFA.end());
     infile.close();
     
-    info_NFA.erase(info_NFA.begin()+i,info_NFA.end()); //cambio el tamaño de mi vector
-    
-    total_de_estados = stoi(info_NFA[0]); //con stoi combierto un string en un numero
+    total_de_estados = stoi(info_NFA[0]);
     estado_inicial = stoi(info_NFA[1]);
-    for(int i = 2; i < info_NFA.size(); i++){
+    for(int i = 2; i < info_NFA.size(); i++) {
         Estado estado(info_NFA[i]);
         estados.insert(estado);
     } 
 
-    //Creo alfabeto
-    set<Estado>::iterator it = estados.begin(); 
+    std::set<Estado>::iterator it = estados.begin(); 
     Estado aux = *estados.begin();
-    while (it != estados.end()) {  // recorro el set 
+    while (it != estados.end()) { 
         aux = *it;
-        vector<int> vector_aux = aux.GetSimbolo();
-
+        std::vector<int> vector_aux = aux.GetSimbolo();
         for(int i = 0; i < vector_aux.size(); i++) {            
             alfabeto.insert(vector_aux[i]);
         }
         it++;        
     }    
 }
-
+//Con el atributo ChekLenguaje compruebo si una palabra de la cadena esta en alfabeto 
+//Para ello le paso el parametro letra y la comparo con las que forman el atributo alfabeto
 bool NFA::ChekLenguaje(int letra) {
-    set<int>::iterator it = alfabeto.begin(); 
+    std::set<int>::iterator it = alfabeto.begin(); 
     int aux = *alfabeto.begin();
     while (it != alfabeto.end()) {  
         aux = *it;
-        if(letra == aux){
+        if(letra == aux) {
             return true;
         }
         it++;       
     }
     return false;
 }
-
+//Con el atributo GetEstadoByNombre obtengo un estado a partir del nombre del estado 
 Estado NFA::GetEstadoByNombre(int nombre) {
-    // Obtener estado siguiente a partir de su nombre
-    set<Estado>::iterator it = estados.begin();
+    std::set<Estado>::iterator it = estados.begin();
     Estado estado = *estados.begin();
-    while (it != estados.end())
-    { // recorro el set
+    while (it != estados.end()) {
         estado = *it;
-        if (estado.GetNombre() == nombre)
-            return estado;
+        if (estado.GetNombre() == nombre) return estado;
         it++;
     }
 }
-
-bool NFA::CheckRecursive(Estado estado, string cadena, int pos) {
+//Con el atributo CheckRecursive de forma recursiva compruebo si la cadena pertenece o no al NFA
+//A la funcion CheckRecursive le paso los parametros: estado, de tipo Estado, que nos dice el estado 
+//siguiente del NFA, cadena, de tipo string, es la cadena que obtenemos del unput.txt y pos, de tipo int
+//se utiliza para recorrer la cadena, si hay un ~ no consume una posicion
+bool NFA::CheckRecursive(Estado estado, std::string cadena, int pos) {
     bool result = false;
-    vector<int> aux_simbolos = estado.GetSimbolo();
+    std::vector<int> aux_simbolos = estado.GetSimbolo();
     bool vacio = true;
     
     for (int i = 0; i < aux_simbolos.size(); i++) {
         if(aux_simbolos[i] == '~') {
             vacio = false;
-            
         }
     }
 
     if ((cadena.length() == pos && vacio == true)) {
         //condicion de parada
-
         return estado.GetAceptacion() ? true : false;
-
     }else {
-
-        vector<int> aux_simbolos = estado.GetSimbolo();
-        vector<int> aux_siguiente = estado.GetSiguiente();
-
+        std::vector<int> aux_simbolos = estado.GetSimbolo();
+        std::vector<int> aux_siguiente = estado.GetSiguiente();
         for (int i = 0; i < estado.GetNumeroTransiciones(); i++) {
             if (aux_simbolos[i] == cadena[pos]) {
                 Estado siguienteEstado = GetEstadoByNombre(aux_siguiente[i]);
                 result = CheckRecursive(siguienteEstado, cadena, pos + 1);
-
                 if (result) return true;
             }
-
-            if(aux_simbolos[i] == 126) {
-                
+            if(aux_simbolos[i] == 126) {   
                 Estado siguienteEstado = GetEstadoByNombre(aux_siguiente[i]);
                 result = CheckRecursive(siguienteEstado, cadena, pos);
-
                 if (result) return true; 
             }
         }

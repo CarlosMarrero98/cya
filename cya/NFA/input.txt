@@ -1,5 +1,4 @@
-1
-01
-011111111
-1111
-010101001
+bbbbbbbb
+aaaabbbbbbaa
+asdas
+aaaaa
